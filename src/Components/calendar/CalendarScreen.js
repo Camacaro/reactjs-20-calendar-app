@@ -11,7 +11,7 @@ import { CalendarEvent } from './CalendarEvent'
 import { CalendarModal } from './CalendarModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { uiOpenModal } from '../../actions/ui'
-import { eventSetActive } from '../../actions/events'
+import { eventSetActive, eventClearActiveEvent } from '../../actions/events'
 import { AddNewFab } from '../ui/AddNewFab'
 import { DeleteEventFab } from '../ui/DeleteEventFab'
 
@@ -58,6 +58,11 @@ export const CalendarScreen = () => {
     localStorage.setItem('lastView', e)
   }
 
+  const onSelectSlot = (e) => {
+    // console.log('onSelectSlot', e)
+    dispatch( eventClearActiveEvent() )
+  }
+
   const eventStyleGetter = ( event, start, end, isSelected ) => {
     // console.log({event, start, end, isSelected})
 
@@ -89,6 +94,8 @@ export const CalendarScreen = () => {
         onSelectEvent={ onSelectEvent } 
         onView={ onViewChange } // view: mes, semana, dia, agenda
         view={ lastView }
+        onSelectSlot={ onSelectSlot } // manejar eventos fuera de la seleccion del calendar
+        selectable={ true } // manejar eventos fuera de la seleccion del calendar
         components={{
           event: CalendarEvent
         }}
