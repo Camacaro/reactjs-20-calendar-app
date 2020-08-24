@@ -9,45 +9,48 @@ import { Navbar } from '../ui/Navbar'
 import { messages } from '../helpers/calendar-message-es'
 import { CalendarEvent } from './CalendarEvent'
 import { CalendarModal } from './CalendarModal'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { uiOpenModal } from '../../actions/ui'
 import { eventSetActive } from '../../actions/events'
 import { AddNewFab } from '../ui/AddNewFab'
+import { DeleteEventFab } from '../ui/DeleteEventFab'
 
 moment.locale('es');
 
 const localizer = momentLocalizer(moment);
 
-const events = [
-  {
-    title: 'Cumpleaños del jefe',
-    start: moment().toDate(), // new Date
-    end: moment().add(2, 'hours').toDate(),
-    bgcolor: 'fafafa',
-    notes: 'comprar pastel',
-    user: {
-      _id: '123',
-      name: 'Jesus'
-    }
-  }
-]
+// const events = [
+//   {
+//     title: 'Cumpleaños del jefe',
+//     start: moment().toDate(), // new Date
+//     end: moment().add(2, 'hours').toDate(),
+//     bgcolor: 'fafafa',
+//     notes: 'comprar pastel',
+//     user: {
+//       _id: '123',
+//       name: 'Jesus'
+//     }
+//   }
+// ]
 
 export const CalendarScreen = () => {
 
-  const [lastView, setLastView] = useState( localStorage.getItem('lastView') || 'month' );
   const dispatch = useDispatch()
 
+  const { events, activeEvent } = useSelector(state => state.calendar)
+
+  const [lastView, setLastView] = useState( localStorage.getItem('lastView') || 'month' );
+
   const onDoubleClick = (e) => {
-    console.log(e)
-    // console.log('aBRIR MODAL')
+    console.log('Abrir modal')
+    // console.log(e)
     dispatch( uiOpenModal() )
   }
 
   const onSelectEvent = (e) => {
-    console.log(e)
+    // console.log(e)
     console.log('Evento seleccionado');
     dispatch( eventSetActive(e) )
-    dispatch( uiOpenModal() )
   }
 
   const onViewChange = (e) => {
@@ -94,6 +97,9 @@ export const CalendarScreen = () => {
       <CalendarModal />
 
       <AddNewFab />
+
+      { activeEvent && <DeleteEventFab /> }
+      
     </div>
   )
 }

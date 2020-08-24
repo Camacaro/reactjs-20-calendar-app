@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import DateTimePicker from 'react-datetime-picker';
 import moment from 'moment'
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
 import { uiCloseModal } from "../../actions/ui";
+import { eventAddNew, eventClearActiveEvent, eventUpdated } from "../../actions/events";
 
 const customStyles = {
   content: {
@@ -22,22 +23,33 @@ Modal.setAppElement("#root");
 const now = moment().minute(0).seconds(0).add(1, 'hours'); // 12:00
 const nowPlus1 = now.clone().add(1, 'hours');
 
+const initEvent = {
+  title: '',
+  notes: '',
+  start: now.toDate(),
+  end: nowPlus1.toDate()
+}
+
 export const CalendarModal = () => {
 
   const dispatch = useDispatch();
   const { modalOpen } = useSelector(state => state.ui);
+  const { activeEvent } = useSelector(state => state.calendar);
   const [dateStart, setDateStart] = useState( now.toDate() );
   const [dateEnd, setDateEnd] = useState( nowPlus1.toDate() );
   const [titleValid, settitleValid] = useState(true)
 
-  const [formValues, setFormValues] = useState({
-    title: 'Evento',
-    notes: '',
-    start: now.toDate(),
-    end: nowPlus1.toDate()
-  });
+  const [formValues, setFormValues] = useState(initEvent);
 
   const { notes, title, start, end } = formValues;
+
+  useEffect(() => {
+    if( activeEvent ) {
+      setFormValues( activeEvent )
+    } else {
+      setFormValues( initEvent )
+    }
+  }, [activeEvent, setFormValues])
 
   const handleInputChange = ({target}) => {
     setFormValues({
@@ -49,6 +61,9 @@ export const CalendarModal = () => {
   const closeModal = () => {
     console.log("closing modal...");
     dispatch( uiCloseModal() )
+    dispatch( eventClearActiveEvent() )
+    setFormValues( initEvent )
+    
   };
   
   const handleStartDateChange = (e) => {
@@ -83,7 +98,21 @@ export const CalendarModal = () => {
       return settitleValid(false);
     }
 
-    // TODO: realizar grabacion 
+    if( activeEvent ) {
+      dispatch( eventUpdated( formValues ) )
+    } else {
+
+      dispatch( eventAddNew({
+        ...formValues,
+        id: new Date().getTime(),
+        user: {
+          _id: '1233',
+          name: 'Jesus'
+        }
+      }) )
+    }
+    
+
     settitleValid(true);
     closeModal();
   }
