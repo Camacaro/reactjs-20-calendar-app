@@ -19,6 +19,7 @@
     "redux-thunk": "^2.3.0",
     "sweetalert2": "^9.17.1"
   },
+  "homepage": "https://camacaro.github.io/reactjs-20-calendar-app/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && rm -rf docs && mv build docs",
