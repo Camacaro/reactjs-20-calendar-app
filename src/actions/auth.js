@@ -25,6 +25,29 @@ export const startLogin = (email, password) => {
   }
 }
 
+export const startRegister = ( rname, email, password ) => {
+  return async (dispatch) => {
+    const resp = await fetchSinToken( 'auth/new', {name: rname, email, password}, 'POST' );
+    const {ok, token, uid, name, ...rest} = await resp.json();
+
+    console.log({ok, token, uid, name, ...rest} )
+
+    if ( ok ) {
+      localStorage.setItem('token', token )
+      localStorage.setItem('token-init-date', new Date().getTime() )
+
+      dispatch( login({
+        uid,
+        name
+      }))
+
+    } else {
+
+      Swal.fire('Error', rest.msg, 'error')
+    }
+  }
+}
+
 const login = (user) => ({
   type: types.authLogin,
   payload: user
