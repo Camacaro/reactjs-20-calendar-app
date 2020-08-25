@@ -6,7 +6,7 @@ import 'moment/locale/es'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 import { Navbar } from '../ui/Navbar'
-import { messages } from '../helpers/calendar-message-es'
+import { messages } from '../../helpers/calendar-message-es'
 import { CalendarEvent } from './CalendarEvent'
 import { CalendarModal } from './CalendarModal'
 import { useDispatch, useSelector } from 'react-redux'
